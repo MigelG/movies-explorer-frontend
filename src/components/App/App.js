@@ -1,37 +1,55 @@
-import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import Footer from '../Footer/Footer';
-import Header from '../Header/Header';
-import Login from '../Login/Login';
-import Main from '../Main/Main';
-import Movies from '../Movies/Movies';
-import Profile from '../Profile/Profile';
-import Register from '../Register/Register';
-import SavedMovies from '../SavedMovies/SavedMovies';
+import BlankLayout from '../layouts/BlankLayout/BlankLayout';
+import MainLayout from '../layouts/MainLayout/MainLayout';
+import Movies from '../pages/Movies/Movies';
+import AboutPage from '../pages/AboutPage/AboutPage';
+import LoginPage from '../pages/AuthPage/LoginPage';
+import RegisterPage from '../pages/AuthPage/RegisterPage';
+import Profile from '../pages/Profile/Profile';
+import SavedMovies from '../pages/SavedMovies/SavedMovies';
 import './App.css';
+import NotFoundPage from '../pages/NotFoundPage/NotFoundPage';
+import OnlyHeaderLayout from '../layouts/OnlyHeaderLayout/OnlyHeaderLayout';
+import { useState } from 'react';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
-    loggedIn ? navigate('/') : navigate('/sign-in');
-  }, [loggedIn]);
+  function onLogin() {
+    setLoggedIn(true);
+    navigate('/movies');
+  }
+
+  function onLogout() {
+    setLoggedIn(false);
+    navigate('/');
+  }
 
   return (
     <div className="App">
-      <Header />
-
       <Routes>
-        <Route path='/' element={<Main />} />
-        <Route path='/movies' element={<Movies />} />
-        <Route path='/saved-movies' element={<SavedMovies />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/signin' element={<Login />} />
-        <Route path='/signup' element={<Register />} />
-      </Routes>
 
-      <Footer />
+        <Route path='/' element={<MainLayout loggedIn={loggedIn} />}>
+          <Route index element={<AboutPage />} />
+        </Route>
+
+        <Route path='/' element={<MainLayout loggedIn={loggedIn} />}>
+          <Route path='movies' element={<Movies />} />
+          <Route path='saved-movies' element={<SavedMovies />} />
+        </Route>
+
+        <Route path='/' element={<OnlyHeaderLayout loggedIn={loggedIn} />}>
+          <Route path='profile' element={<Profile onLogout={onLogout} />} />
+        </Route>
+
+        <Route path='/' element={<BlankLayout />}>
+          <Route path='signin' element={<LoginPage onLogin={onLogin} />} />
+          <Route path='signup' element={<RegisterPage />} />
+          <Route path='*' element={<NotFoundPage />} />
+        </Route>
+
+      </Routes>
     </div>
   );
 }
