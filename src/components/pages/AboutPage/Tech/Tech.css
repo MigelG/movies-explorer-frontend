@@ -73,6 +73,10 @@
 }
 
 @media screen and (max-width: 350px) {
+    .tech {
+        background-color: #fafafa;
+    }
+
     .tech__container {
         padding: 50px 18px 100px;
     }

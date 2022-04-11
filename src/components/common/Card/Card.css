@@ -6,7 +6,6 @@
 
 .card__image {
     display: block;
-    height: 151px;
     width: 100%;
     object-fit: cover;
     object-position: center;
@@ -82,16 +81,4 @@
 
 .card:hover .card__button_type_delete {
     opacity: 1;
-}
-
-@media screen and (max-width: 1279px) {
-    .card__image {
-        height: 190px;
-    }
-}
-
-@media screen and (max-width: 400px) {
-    .card__image {
-        height: 168px;
-    }
 }

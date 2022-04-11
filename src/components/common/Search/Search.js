@@ -9,7 +9,7 @@ export default function Search() {
     return (
         <div className='search'>
             <form className='search__form'>
-                <input className='search__input' type='text' placeholder='Фильм'></input>
+                <input className='search__input' type='text' placeholder='Фильм' required></input>
                 <button className='search__button' type='submit' onClick={handleSubmit} />
             </form>
             <MyCheckbox />

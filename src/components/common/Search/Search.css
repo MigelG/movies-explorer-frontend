@@ -10,6 +10,7 @@
 .search__form {
     flex: 1;
     display: flex;
+    gap: 15px;
     padding: 7px;
     border-radius: 50px;
     border: 1.5px solid #aaaaaa;
@@ -19,8 +20,13 @@
     flex: 1;
     border: none;
     outline: none;
-    padding: 0 15px;
+    padding-left: 15px;
     background-color: inherit;
+}
+
+.search__input:focus {
+    border: 2px solid #000000;
+    border-radius: 10px;
 }
 
 .search__button {
@@ -33,6 +39,12 @@
     border: none;
     border-radius: 50%;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+.search__button:hover {
+    opacity: 1;
+    background-color: #1333c5;
 }
 
 @media screen and (max-width: 1000px) {
