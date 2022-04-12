@@ -1,0 +1,63 @@
+.not-found {
+    text-align: center;
+    padding-top: 246px;
+    padding-bottom: 60px;
+    background-color: #fafafa;
+    flex-grow: 1;
+}
+
+.not-found__title {
+    margin: 0;
+    margin-bottom: 5px;
+    font-size: 140px;
+    font-weight: 400;
+    line-height: 169px;
+    letter-spacing: 0em;
+}
+
+.not-found__text {
+    margin: 0;
+    margin-bottom: 184px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0em;
+}
+
+.not-found__link {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-decoration: none;
+    color: #3456F3;
+}
+
+@media screen and (max-width: 768px) {
+    .not-found {
+        padding-top: 406px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .not-found {
+        padding-top: 328px;
+    }
+
+    .not-found__title {
+        font-size: 80px;
+        line-height: 97px;
+        margin-bottom: 10px;
+    }
+
+    .not-found__text {
+        font-size: 12px;
+        line-height: 15px;
+        margin-bottom: 284px;
+    }
+
+    .not-found__link {
+        font-size: 12px;
+        line-height: 15px;
+    }
+}
