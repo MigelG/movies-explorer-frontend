@@ -18,7 +18,7 @@ export default function LoginPage({ onLogin }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        onLogin();
+        onLogin(email, password);
     }
 
     return (

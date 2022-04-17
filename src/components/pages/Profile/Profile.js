@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import './Profile.css';
+import { CurrentUserContext } from '../../../contexts/CurrentUserContext';
 
-export default function Profile({ onLogout }) {
-    const [name, setName] = useState('Михаил');
-    const [email, setEmail] = useState('qwerty@ya.ru');
+export default function Profile({ onLogout, handleUpdateUser }) {
+    const currentUser = useContext(CurrentUserContext);
+
+    const [name, setName] = useState(currentUser.name);
+    const [email, setEmail] = useState(currentUser.email);
 
     function handleChangeName(e) {
         setName(e.target.value);
@@ -15,13 +18,14 @@ export default function Profile({ onLogout }) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        handleUpdateUser({ name, email });
     }
 
     return (
         <div className='profile'>
             <div className='profile__container'>
-                <h1 className='profile__title'>Привет, Михаил!</h1>
-                <form className='profile__form'>
+                <h1 className='profile__title'>{`Привет, ${currentUser.name}!`}</h1>
+                <form className='profile__form' onSubmit={handleSubmit}>
                     <label className='profile__label'>
                         Имя
                         <input type='name' name='name'
@@ -32,7 +36,7 @@ export default function Profile({ onLogout }) {
                         <input type='email' name='email'
                             className='profile__input' value={email} onChange={handleChangeEmail} required />
                     </label>
-                    <button className='profile__submit-button' type='submit' onClick={handleSubmit}>Редактировать</button>
+                    <button className='profile__submit-button' type='submit'>Редактировать</button>
                 </form>
                 <button className='profile__logout-button' type='button' onClick={onLogout}>Выйти из аккаунта</button>
             </div>
