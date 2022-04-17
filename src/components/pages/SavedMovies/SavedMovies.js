@@ -1,9 +1,9 @@
 import CardList from '../../common/CardList/CardList';
 import Search from '../../common/Search/Search';
-import { initialArray } from '../../../constants/initialArray';
 import './SavedMovies.css';
 
 export default function SavedMovies() {
+    const initialArray = [];
     const savedMovies = initialArray.filter((m) => {
         return m.isLiked;
     })

@@ -1,5 +1,5 @@
-//export const BASE_URL = 'https://api.migel.nomoredomains.work';
-export const BASE_URL = 'http://localhost:3000';
+//const BASE_URL = 'https://api.migel.nomoredomains.work';
+const BASE_URL = 'http://localhost:3000';
 
 const headers = (token) => {
     return {

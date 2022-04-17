@@ -18,6 +18,12 @@ export default function AuthForm({
     const [formValid, setFormValid] = useState(false);
 
     useEffect(() => {
+        if (formName === 'login') {
+            setNameError('');
+        }
+    }, []);
+
+    useEffect(() => {
         if (emailError || passwordError || nameError) {
             setFormValid(false);
         } else {
@@ -83,7 +89,11 @@ export default function AuthForm({
 
     function handleSubmit(e) {
         e.preventDefault();
-        onSubmit();
+        if (formName === 'login') {
+            onSubmit(email, password);
+        } else {
+            onSubmit(name, email, password);
+        }
     }
 
     return (

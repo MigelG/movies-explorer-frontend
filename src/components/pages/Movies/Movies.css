@@ -7,6 +7,14 @@
     padding-bottom: 80px;
 }
 
+.movies-page__error {
+    margin: 0;
+    margin-top: 50px;
+    font-size: 24px;
+    font-weight: 500;
+    text-align: center;
+}
+
 .movies-page__button {
     width: 320px;
     height: 36px;

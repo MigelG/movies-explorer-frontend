@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import './Card.css';
+import { formatDuration } from '../../../utils/utils';
 
 export default function Card({ image, title, duration, isLiked }) {
     const location = useLocation();
@@ -16,13 +17,15 @@ export default function Card({ image, title, duration, isLiked }) {
     return (
         <li className='card'>
             <figure className='card__figure'>
-                <img className='card__image' src={image} alt={title} />
+                <div className='card__image-container'>
+                    <img className='card__image' src={`https://api.nomoreparties.co${image}`} alt={title} />
+                </div>
                 <figcaption className='card__image-caption'>
                     <h2 className='card__title'>{title}</h2>
                     <button className={buttonClasses} />
                 </figcaption>
             </figure>
-            <p className='card__duration'>{duration}</p>
+            <p className='card__duration'>{formatDuration(duration)}</p>
         </li>
     )
 }
