@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MyCheckbox from '../../ui/MyCheckbox/MyCheckbox';
 import './Search.css';
 
-export default function Search({ handleSearch }) {
+export default function Search({ handleSearch, parent }) {
     const [request, setRequest] = useState({ query: '', checkbox: false });
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        if (parent === 'movies' && JSON.parse(localStorage.getItem('request'))) {
+            setRequest(JSON.parse(localStorage.getItem('request')));
+        }
+    }, []);
 
     function handleChange(e) {
         setRequest({ ...request, query: e.target.value });
@@ -18,6 +24,10 @@ export default function Search({ handleSearch }) {
             setError('');
             handleSearch(request);
         }
+    }
+
+    function handleCheckbox(e) {
+        setRequest({ ...request, checkbox: e.target.checked });
     }
 
     return (
@@ -34,7 +44,7 @@ export default function Search({ handleSearch }) {
                 <button className='search__button' type='submit' />
                 {error && <p className='search__form-error'>{error}</p>}
             </form>
-            <MyCheckbox />
+            <MyCheckbox onChange={handleCheckbox} checked={request.checkbox} />
         </div>
     )
 }
