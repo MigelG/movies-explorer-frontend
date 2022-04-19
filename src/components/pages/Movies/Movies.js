@@ -5,7 +5,7 @@ import { getMovies } from '../../../utils/MoviesApi';
 import { useEffect, useState } from 'react';
 import { useResize } from '../../../hook/useResize';
 
-export default function Movies() {
+export default function Movies({ likeMovie, dislikeMovie }) {
 
     const [allMovies, setAllMovies] = useState([]);
     const [searchedMovies, setSearchedMovies] = useState([]);
@@ -48,7 +48,7 @@ export default function Movies() {
         }
     }, [])
 
-    const [arr, fun] = useResize(searchedMovies);
+    const [array, fun] = useResize(searchedMovies);
 
     return (
         <div className='movies-page'>
@@ -56,7 +56,10 @@ export default function Movies() {
                 <Search handleSearch={searchMovies} parent='movies' />
                 {error ?
                     <p className='movies-page__error'>{error}</p> :
-                    <CardList cardList={arr} />}
+                    <CardList
+                        cardList={array}
+                        likeMovie={likeMovie}
+                        dislikeMovie={dislikeMovie} />}
                 <button className='movies-page__button' onClick={fun}>Ещё</button>
             </div>
         </div>

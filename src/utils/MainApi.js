@@ -66,6 +66,42 @@ export const saveUserInfo = (data, token) => {
         .then(checkResponse);
 }
 
+export const getSavedMovies = (token) => {
+    return fetch(`${BASE_URL}/movies`, {
+        headers: headers(token),
+    })
+        .then(checkResponse);
+}
+
+export const saveMovie = (data, token) => {
+    return fetch(`${BASE_URL}/movies`, {
+        method: 'POST',
+        headers: headers(token),
+        body: JSON.stringify({
+            country: data.country || 'unknown',
+            director: data.director,
+            duration: data.duration,
+            year: data.year,
+            description: data.description,
+            image: `https://api.nomoreparties.co${data.image.url}`,
+            trailerLink: data.trailerLink,
+            thumbnail: `https://api.nomoreparties.co${data.image.formats.thumbnail.url}`,
+            movieId: data.id,
+            nameRU: data.nameRU,
+            nameEN: data.nameEN || 'unknown'
+        }),
+    })
+        .then(checkResponse);
+}
+
+export const deleteMovie = (id, token) => {
+    return fetch(`${BASE_URL}/movies/${id}`, {
+        method: 'DELETE',
+        headers: headers(token),
+    })
+        .then(checkResponse);
+}
+
 function checkResponse(res) {
     if (res.ok) { return res.json() }
     return Promise.reject(`Что-то пошло не так: ${res.status}`);
