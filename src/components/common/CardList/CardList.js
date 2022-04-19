@@ -1,7 +1,7 @@
 import Card from '../Card/Card';
 import './CardList.css';
 
-export default function CardList({ cardList, likeMovie, dislikeMovie }) {
+export default function CardList({ cardList, likeMovie, dislikeMovie, savedMovies }) {
 
     return (
         <ul className='movies'>
@@ -9,7 +9,8 @@ export default function CardList({ cardList, likeMovie, dislikeMovie }) {
                 key={m.id || m._id}
                 movie={m}
                 likeMovie={likeMovie}
-                dislikeMovie={dislikeMovie} />)}
+                dislikeMovie={dislikeMovie}
+                savedMovies={savedMovies} />)}
         </ul>
     )
 }

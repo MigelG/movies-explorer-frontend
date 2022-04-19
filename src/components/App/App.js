@@ -14,6 +14,7 @@ import { useState, useEffect } from 'react';
 import * as mainApi from '../../utils/MainApi';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import ProtectedRoute from '../hoc/ProtectedRoute';
+import Popup from '../common/Popup/Popup';
 
 function App() {
     const navigate = useNavigate();
@@ -22,13 +23,13 @@ function App() {
     const [token, setToken] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
     const [savedMovies, setSavedMovies] = useState([]);
+    const [popupIsOpen, setPopupIsOpen] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
 
-    //Проверка токена и авторизация пользователя при монтировании
     useEffect(() => {
         getUserInfo();
     }, []);
 
-    //Получение информации о пользователе по токену
     function getUserInfo() {
         const token = localStorage.getItem('token');
         if (token) {
@@ -40,8 +41,9 @@ function App() {
                         setCurrentUser(res.data);
                     }
                 })
-                .catch((res) => {
-                    console.log(`Что-то пошло не так: ${res.statusText}`);
+                .catch(() => {
+                    setPopupMessage('При подключении к серверу произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                    setPopupIsOpen(true);
                 })
                 .finally(() => {
                     setIsCheckingToken(false);
@@ -57,8 +59,17 @@ function App() {
                 setLoggedIn(true);
                 navigate('/movies');
             })
-            .catch(err => {
-                console.log(err)
+            .catch((err) => {
+                if (err === 401) {
+                    setPopupMessage('Неправильные почта или пароль');
+                    setPopupIsOpen(true);
+                } else if (err === 400) {
+                    setPopupMessage('Введены некорректные данные');
+                    setPopupIsOpen(true);
+                } else {
+                    setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                    setPopupIsOpen(true);
+                }
             });
     }
 
@@ -76,8 +87,17 @@ function App() {
             .then(res => {
                 onLogin(email, password);
             })
-            .catch(err => {
-                console.log(err);
+            .catch((err) => {
+                if (err === 409) {
+                    setPopupMessage('Пользователь с таким e-mail уже зарегистрирован');
+                    setPopupIsOpen(true);
+                } else if (err === 400) {
+                    setPopupMessage('Введены некорректные данные');
+                    setPopupIsOpen(true);
+                } else {
+                    setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                    setPopupIsOpen(true);
+                }
             });
     }
 
@@ -86,8 +106,17 @@ function App() {
             .then(data => {
                 setCurrentUser(data.data);
             })
-            .catch((res) => {
-                console.log(`Что-то пошло не так: ${res.statusText}`);
+            .catch((err) => {
+                if (err === 404) {
+                    setPopupMessage('Пользователь с указанным id не найден');
+                    setPopupIsOpen(true);
+                } else if (err === 400) {
+                    setPopupMessage('Введены некорректные данные');
+                    setPopupIsOpen(true);
+                } else {
+                    setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                    setPopupIsOpen(true);
+                }
             });
     }
 
@@ -96,13 +125,47 @@ function App() {
             .then((newMovie) => {
                 updateSavedMovies([newMovie.data, ...savedMovies])
             })
+            .catch((err) => {
+                if (err === 400) {
+                    setPopupMessage('Переданы некорректные данные');
+                    setPopupIsOpen(true);
+                } else {
+                    setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                    setPopupIsOpen(true);
+                }
+            });
     }
 
     function dislikeMovie(movie) {
-        mainApi.deleteMovie(movie._id, token)
+        let id;
+        if (!movie._id) {
+            const deletedMovie = savedMovies.find((m) => {
+                return m.movieId === movie.id;
+            });
+            id = deletedMovie._id;
+        } else {
+            id = movie._id;
+        }
+
+        mainApi.deleteMovie(id, token)
             .then((res) => {
-                updateSavedMovies(savedMovies.filter(m => m._id !== movie._id));
+                updateSavedMovies(savedMovies.filter(m => m._id !== id));
             })
+            .catch((err) => {
+                if (err === 404) {
+                    setPopupMessage('Фильм с указанным id не найден');
+                    setPopupIsOpen(true);
+                } else if (err === 403) {
+                    setPopupMessage('Доступ запрещен');
+                    setPopupIsOpen(true);
+                } else if (err === 400) {
+                    setPopupMessage('Переданы некорректные данные');
+                    setPopupIsOpen(true);
+                } else {
+                    setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                    setPopupIsOpen(true);
+                }
+            });
     }
 
     function getSavedMovies() {
@@ -110,11 +173,19 @@ function App() {
             .then(data => {
                 updateSavedMovies(data.data);
             })
+            .catch(() => {
+                setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                setPopupIsOpen(true);
+            });
     }
 
     function updateSavedMovies(savedMovies) {
         setSavedMovies(savedMovies);
         localStorage.setItem('savedMovies', JSON.stringify(savedMovies));
+    }
+
+    function closePopup() {
+        setPopupIsOpen(false);
     }
 
     useEffect(() => {
@@ -142,7 +213,12 @@ function App() {
                         <Route path='/' element={<MainLayout loggedIn={loggedIn} />}>
                             <Route path='movies' element={
                                 <ProtectedRoute loggedIn={loggedIn}>
-                                    <Movies likeMovie={likeMovie} dislikeMovie={dislikeMovie} />
+                                    <Movies
+                                        likeMovie={likeMovie}
+                                        dislikeMovie={dislikeMovie}
+                                        savedMovies={savedMovies}
+                                        setPopupMessage={setPopupMessage}
+                                        setPopupIsOpen={setPopupIsOpen} />
                                 </ProtectedRoute>
                             } />
 
@@ -183,6 +259,8 @@ function App() {
                         </Route>
 
                     </Routes>
+
+                    <Popup isOpen={popupIsOpen} message={popupMessage} onClose={closePopup} />
                 </div>
             }
 

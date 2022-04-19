@@ -104,5 +104,5 @@ export const deleteMovie = (id, token) => {
 
 function checkResponse(res) {
     if (res.ok) { return res.json() }
-    return Promise.reject(`Что-то пошло не так: ${res.status}`);
+    return Promise.reject(res.status);
 }

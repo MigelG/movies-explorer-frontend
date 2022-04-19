@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import Preloader from '../common/Preloader/Preloader';
+import Preloader from '../ui/Preloader/Preloader';
 
 export default function ProtectedRoute({ children, loggedIn }) {
 

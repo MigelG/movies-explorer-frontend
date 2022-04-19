@@ -4,19 +4,29 @@ import './Movies.css';
 import { getMovies } from '../../../utils/MoviesApi';
 import { useEffect, useState } from 'react';
 import { useResize } from '../../../hook/useResize';
+import Preloader from '../../ui/Preloader/Preloader';
 
-export default function Movies({ likeMovie, dislikeMovie }) {
+export default function Movies({ likeMovie, dislikeMovie, savedMovies, setPopupMessage, setPopupIsOpen }) {
 
     const [allMovies, setAllMovies] = useState([]);
     const [searchedMovies, setSearchedMovies] = useState([]);
     const [error, setError] = useState('');
     const [request, setRequest] = useState({ query: '', checkbox: false });
+    const [loading, setLoading] = useState(false);
 
     function searchMovies(request) {
         if (!allMovies.length) {
+            setLoading(true);
             getMovies()
                 .then((res) => {
                     setAllMovies(res);
+                })
+                .catch(() => {
+                    setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                    setPopupIsOpen(true);
+                })
+                .finally(() => {
+                    setLoading(false);
                 })
         }
         localStorage.setItem('request', JSON.stringify(request));
@@ -48,19 +58,22 @@ export default function Movies({ likeMovie, dislikeMovie }) {
         }
     }, [])
 
-    const [array, fun] = useResize(searchedMovies);
+    const [moviesArray, getMoreMovies] = useResize(searchedMovies);
 
     return (
         <div className='movies-page'>
             <div className='movies-page__container content'>
                 <Search handleSearch={searchMovies} parent='movies' />
-                {error ?
-                    <p className='movies-page__error'>{error}</p> :
-                    <CardList
-                        cardList={array}
-                        likeMovie={likeMovie}
-                        dislikeMovie={dislikeMovie} />}
-                <button className='movies-page__button' onClick={fun}>Ещё</button>
+                {loading ?
+                    <Preloader /> :
+                    error ?
+                        <p className='movies-page__error'>{error}</p> :
+                        <CardList
+                            cardList={moviesArray}
+                            likeMovie={likeMovie}
+                            dislikeMovie={dislikeMovie}
+                            savedMovies={savedMovies} />}
+                <button className='movies-page__button' onClick={getMoreMovies}>Ещё</button>
             </div>
         </div>
     )
