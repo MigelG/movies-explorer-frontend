@@ -70,6 +70,10 @@
     line-height: 16px;
 }
 
+.profile__submit-button:disabled {
+    cursor: default;
+}
+
 .profile__logout-button {
     border: none;
     outline: none;

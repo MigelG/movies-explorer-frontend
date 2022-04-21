@@ -8,7 +8,9 @@ export default function LoginPage({ onLogin }) {
     return (
         <div className='auth'>
             <div className='auth__container'>
-                <img src={logo} alt='Логотип' className='auth__logo' />
+                <Link to='/'>
+                    <img src={logo} alt='Логотип' className='auth__logo' />
+                </Link>
                 <h1 className='auth__title'>Рады видеть!</h1>
                 <AuthForm
                     formName='login'

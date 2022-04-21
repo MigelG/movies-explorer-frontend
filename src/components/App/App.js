@@ -24,6 +24,7 @@ function App() {
     const [currentUser, setCurrentUser] = useState(null);
     const [savedMovies, setSavedMovies] = useState([]);
     const [popupIsOpen, setPopupIsOpen] = useState(false);
+    const [popupStatus, setPopupStatus] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
 
     useEffect(() => {
@@ -43,13 +44,15 @@ function App() {
                 })
                 .catch(() => {
                     setPopupMessage('При подключении к серверу произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                    setPopupStatus(false);
                     setPopupIsOpen(true);
                 })
                 .finally(() => {
                     setIsCheckingToken(false);
                 });
+        } else {
+            setIsCheckingToken(false);
         }
-        setIsCheckingToken(false);
     }
 
     function onLogin(email, password) {
@@ -62,14 +65,13 @@ function App() {
             .catch((err) => {
                 if (err === 401) {
                     setPopupMessage('Неправильные почта или пароль');
-                    setPopupIsOpen(true);
                 } else if (err === 400) {
                     setPopupMessage('Введены некорректные данные');
-                    setPopupIsOpen(true);
                 } else {
                     setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
-                    setPopupIsOpen(true);
                 }
+                setPopupStatus(false);
+                setPopupIsOpen(true);
             });
     }
 
@@ -78,6 +80,7 @@ function App() {
         localStorage.removeItem('allMovies');
         localStorage.removeItem('request');
         localStorage.removeItem('searchedMovies');
+        localStorage.removeItem('savedMovies');
         setLoggedIn(false);
         navigate('/');
     }
@@ -90,33 +93,34 @@ function App() {
             .catch((err) => {
                 if (err === 409) {
                     setPopupMessage('Пользователь с таким e-mail уже зарегистрирован');
-                    setPopupIsOpen(true);
                 } else if (err === 400) {
                     setPopupMessage('Введены некорректные данные');
-                    setPopupIsOpen(true);
                 } else {
                     setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
-                    setPopupIsOpen(true);
                 }
+                setPopupStatus(false);
+                setPopupIsOpen(true);
             });
     }
 
     function handleUpdateUser(user) {
         mainApi.saveUserInfo(user, token)
             .then(data => {
+                setPopupStatus(true);
+                setPopupMessage('Информация успешно обновлена');
+                setPopupIsOpen(true);
                 setCurrentUser(data.data);
             })
             .catch((err) => {
                 if (err === 404) {
                     setPopupMessage('Пользователь с указанным id не найден');
-                    setPopupIsOpen(true);
                 } else if (err === 400) {
                     setPopupMessage('Введены некорректные данные');
-                    setPopupIsOpen(true);
                 } else {
                     setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
-                    setPopupIsOpen(true);
                 }
+                setPopupStatus(false);
+                setPopupIsOpen(true);
             });
     }
 
@@ -128,11 +132,11 @@ function App() {
             .catch((err) => {
                 if (err === 400) {
                     setPopupMessage('Переданы некорректные данные');
-                    setPopupIsOpen(true);
                 } else {
                     setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
-                    setPopupIsOpen(true);
                 }
+                setPopupStatus(false);
+                setPopupIsOpen(true);
             });
     }
 
@@ -154,17 +158,15 @@ function App() {
             .catch((err) => {
                 if (err === 404) {
                     setPopupMessage('Фильм с указанным id не найден');
-                    setPopupIsOpen(true);
                 } else if (err === 403) {
                     setPopupMessage('Доступ запрещен');
-                    setPopupIsOpen(true);
                 } else if (err === 400) {
                     setPopupMessage('Переданы некорректные данные');
-                    setPopupIsOpen(true);
                 } else {
                     setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
-                    setPopupIsOpen(true);
                 }
+                setPopupStatus(false);
+                setPopupIsOpen(true);
             });
     }
 
@@ -175,6 +177,7 @@ function App() {
             })
             .catch(() => {
                 setPopupMessage('Произошла ошибка на сервере. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+                setPopupStatus(false);
                 setPopupIsOpen(true);
             });
     }
@@ -190,14 +193,8 @@ function App() {
 
     useEffect(() => {
         if (loggedIn) {
-            if (localStorage.getItem('savedMovies')) {
-                setSavedMovies((JSON.parse(localStorage.getItem('savedMovies'))));
-            } else {
-                getSavedMovies();
-            }
+            getSavedMovies();
         }
-
-        return localStorage.removeItem('savedMovies');
     }, [loggedIn])
 
     return (
@@ -260,7 +257,11 @@ function App() {
 
                     </Routes>
 
-                    <Popup isOpen={popupIsOpen} message={popupMessage} onClose={closePopup} />
+                    <Popup
+                        isOpen={popupIsOpen}
+                        message={popupMessage}
+                        onClose={closePopup}
+                        status={popupStatus} />
                 </div>
             }
 

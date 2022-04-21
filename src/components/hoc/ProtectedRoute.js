@@ -1,5 +1,4 @@
 import { Navigate } from 'react-router-dom';
-import Preloader from '../ui/Preloader/Preloader';
 
 export default function ProtectedRoute({ children, loggedIn }) {
 
@@ -7,5 +6,5 @@ export default function ProtectedRoute({ children, loggedIn }) {
         return children;
     }
 
-    return <Navigate to='/signin' />
+    return <Navigate to='/' />
 }

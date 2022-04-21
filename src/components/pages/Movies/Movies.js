@@ -3,7 +3,6 @@ import Search from '../../common/Search/Search';
 import './Movies.css';
 import { getMovies } from '../../../utils/MoviesApi';
 import { useEffect, useState } from 'react';
-import { useResize } from '../../../hook/useResize';
 import Preloader from '../../ui/Preloader/Preloader';
 
 export default function Movies({ likeMovie, dislikeMovie, savedMovies, setPopupMessage, setPopupIsOpen }) {
@@ -37,7 +36,7 @@ export default function Movies({ likeMovie, dislikeMovie, savedMovies, setPopupM
         if (allMovies.length) {
             const searchedMovies = allMovies.filter(movie => {
                 return movie.nameRU.toLowerCase().includes(request.query.toLowerCase()) &&
-                    (request.checkbox ? movie.duration <= 15 : true);
+                    (request.checkbox ? movie.duration <= 40 : true);
             });
             localStorage.setItem('searchedMovies', JSON.stringify(searchedMovies));
             setSearchedMovies(searchedMovies);
@@ -58,8 +57,6 @@ export default function Movies({ likeMovie, dislikeMovie, savedMovies, setPopupM
         }
     }, [])
 
-    const [moviesArray, getMoreMovies] = useResize(searchedMovies);
-
     return (
         <div className='movies-page'>
             <div className='movies-page__container content'>
@@ -69,11 +66,10 @@ export default function Movies({ likeMovie, dislikeMovie, savedMovies, setPopupM
                     error ?
                         <p className='movies-page__error'>{error}</p> :
                         <CardList
-                            cardList={moviesArray}
+                            cardList={searchedMovies}
                             likeMovie={likeMovie}
                             dislikeMovie={dislikeMovie}
                             savedMovies={savedMovies} />}
-                <button className='movies-page__button' onClick={getMoreMovies}>Ещё</button>
             </div>
         </div>
     )

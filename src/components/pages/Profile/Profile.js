@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import './Profile.css';
 import { CurrentUserContext } from '../../../contexts/CurrentUserContext';
 
@@ -7,6 +7,7 @@ export default function Profile({ onLogout, handleUpdateUser }) {
 
     const [name, setName] = useState(currentUser.name);
     const [email, setEmail] = useState(currentUser.email);
+    const [disabled, setDisabled] = useState(true);
 
     function handleChangeName(e) {
         setName(e.target.value);
@@ -20,6 +21,14 @@ export default function Profile({ onLogout, handleUpdateUser }) {
         e.preventDefault();
         handleUpdateUser({ name, email });
     }
+
+    useEffect(() => {
+        if (name === currentUser.name && email === currentUser.email) {
+            setDisabled(true);
+        } else {
+            setDisabled(false);
+        }
+    }, [name, email, currentUser.name, currentUser.email]);
 
     return (
         <div className='profile'>
@@ -36,7 +45,12 @@ export default function Profile({ onLogout, handleUpdateUser }) {
                         <input type='email' name='email'
                             className='profile__input' value={email} onChange={handleChangeEmail} required />
                     </label>
-                    <button className='profile__submit-button' type='submit'>Редактировать</button>
+                    <button
+                        className='profile__submit-button'
+                        type='submit'
+                        disabled={disabled}>
+                        Редактировать
+                    </button>
                 </form>
                 <button className='profile__logout-button' type='button' onClick={onLogout}>Выйти из аккаунта</button>
             </div>
