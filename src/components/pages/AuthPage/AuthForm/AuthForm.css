@@ -11,6 +11,7 @@
     line-height: 12px;
     letter-spacing: 0em;
     text-align: left;
+    margin-bottom: 24px;
 }
 
 .auth-form__input {
@@ -24,8 +25,23 @@
     border-bottom: 1px solid #E8E8E8;
     outline: none;
     padding: 0;
-    margin: 5px 0 24px;
+    margin-top: 5px;
     padding-bottom: 10px;
+}
+
+.auth-form__input_error {
+    color: #EE3465;
+}
+
+.auth-form__error {
+    font-size: 10px;
+    line-height: 12px;
+    margin: 0;
+    margin-top: 5px;
+}
+
+.auth-form__error_active {
+    color: #EE3465;
 }
 
 .auth-form__submit-button {
@@ -44,6 +60,12 @@
 
 .auth-form__submit-button:hover {
     background: #1333c5;
+}
+
+.auth-form__submit-button:disabled {
+    background: #f8f8f8;
+    color: #000000;
+    cursor: default;
 }
 
 @media screen and (max-width: 456px) {

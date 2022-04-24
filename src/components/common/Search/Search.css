@@ -14,6 +14,7 @@
     padding: 7px;
     border-radius: 50px;
     border: 1.5px solid #aaaaaa;
+    position: relative;
 }
 
 .search__input {
@@ -45,6 +46,16 @@
 .search__button:hover {
     opacity: 1;
     background-color: #1333c5;
+}
+
+.search__form-error {
+    position: absolute;
+    width: 100%;
+    bottom: -30px;
+    text-align: center;
+    color: #EE3465;
+    font-size: 1em;
+    margin: 0;
 }
 
 @media screen and (max-width: 1000px) {
